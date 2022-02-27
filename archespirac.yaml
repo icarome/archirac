@@ -1,0 +1,235 @@
+esphome:
+  name: archespirac
+  includes:
+     - ir_ac.h
+  libraries:
+     - https://github.com/icarome/IRremoteESP8266.git
+  project:
+    name: arch.EspIRAC
+    version: "1.0"
+  name_add_mac_suffix: true
+preferences:
+  flash_write_interval: 10s
+
+# esp32:
+#   board: esp32dev
+#   framework:
+#     type: arduino
+esp8266:
+  board: nodemcuv2
+  restore_from_flash: true
+
+# Enable logging
+logger:
+  level: none
+web_server:
+  js_include: "web_server-v0.min.js"
+  js_url: ""
+  css_include: "webserver-v1.min.css"
+  css_url: ""
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "568f01f3909b20a337f6f4a437cca0be"
+
+wifi:
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "arch.IRAC"
+    password: "archirac2022"
+    
+globals:
+ - id: ac_model_1
+   type: String
+   #restore_value: yes
+   #initial_value: "LG"
+ - id: ac_model_2
+   type: String
+   #restore_value: yes
+   #initial_value: "LG"
+ - id: ac_model_3
+   type: String
+   #restore_value: yes
+   #initial_value: "LG"
+ - id: ac_model_4
+   type: String
+   #restore_value: yes
+   #initial_value: "LG"
+select:
+  - platform: template
+    name: "Modelo AR Canal 1"
+    optimistic: true
+    options:
+      - AIRWELL
+      - AMCOR
+      - ARGO
+      - CARRIER_AC64
+      - COOLIX
+      - CORONA_AC
+      - DAIKIN
+      - DAIKIN128
+      - DAIKIN152
+      - DAIKIN160
+      - DAIKIN176
+      - DAIKIN2
+      - DAIKIN216
+      - DAIKIN64
+      - DELONGHI_AC
+      - ECOCLIM
+      - ELECTRA_AC
+      - FUJITSU_AC
+      - GOODWEATHER
+      - GREE
+      - HAIER_AC
+      - HAIER_AC176
+      - HAIER_AC_YRW02
+      - HITACHI_AC
+      - HITACHI_AC1
+      - HITACHI_AC344
+      - HITACHI_AC424
+      - KELON
+      - KELVINATOR
+      - LG
+      - LG2
+      - MIDEA
+      - MIRAGE
+      - MITSUBISHI_AC
+      - MITSUBISHI112
+      - MITSUBISHI136
+      - MITSUBISHI_HEAVY_88
+      - MITSUBISHI_HEAVY_152
+      - NEOCLIMA
+      - PANASONIC_AC
+      - PANASONIC_AC32
+      - RHOSS
+      - SAMSUNG_AC
+      - SANYO_AC
+      - SANYO_AC88
+      - SHARP_AC
+      - TCL112AC
+      - TECHNIBEL_AC
+      - TECO
+      - TEKNOPOINT
+      - TOSHIBA_AC
+      - TRANSCOLD
+      - TROTEC
+      - TROTEC_3550
+      - TRUMA
+      - VESTEL_AC
+      - VOLTAS
+      - WHIRLPOOL_AC
+    initial_option: LG
+    restore_value: true
+    set_action:
+      - lambda: "id(ac_model_1) = String(x.c_str());"
+  - platform: template
+    name: "Modelo AR Canal 2"
+    optimistic: true
+    options:
+      - LG
+      - GREE
+      - DAIKIN
+      - ELECTRA
+      - MIDEA
+      - MIRAGE
+      - KELON
+      - NEOCLIMA
+      - TROTEC
+      - VOLTAS
+      - CARRIER_AC64
+      - WHIRLPOOL_AC
+      - TCL112AC
+    initial_option: LG
+    restore_value: true
+    set_action:
+      - lambda: "id(ac_model_2) = String(x.c_str());"
+  - platform: template
+    name: "Modelo AR Canal 3"
+    optimistic: true
+    options:
+      - LG
+      - GREE
+      - DAIKIN
+      - ELECTRA
+      - MIDEA
+      - MIRAGE
+      - KELON
+      - NEOCLIMA
+      - TROTEC
+      - VOLTAS
+      - CARRIER_AC64
+      - WHIRLPOOL_AC
+      - TCL112AC
+    initial_option: LG
+    restore_value: true
+    set_action:
+      - lambda: "id(ac_model_3) = String(x.c_str());"
+  - platform: template
+    name: "Modelo AR Canal 4"
+    optimistic: true
+    options:
+      - LG
+      - GREE
+      - DAIKIN
+      - ELECTRA
+      - MIDEA
+      - MIRAGE
+      - KELON
+      - NEOCLIMA
+      - TROTEC
+      - VOLTAS
+      - CARRIER_AC64
+      - WHIRLPOOL_AC
+      - TCL112AC
+    initial_option: LG
+    restore_value: true
+    set_action:
+      - lambda: "id(ac_model_4) = String(x.c_str());"
+captive_portal:
+sensor:
+climate:
+  - platform: custom
+    lambda: |-
+      auto my_ac = new IRAC();
+      //my_ac->set_sensor(&id(ac_model_1));
+      my_ac->set_pins(14);
+      my_ac->set_protocol(&id(ac_model_1));
+      App.register_component(my_ac);
+      return {my_ac};
+    climates:
+      - name: "Canal 1"
+  - platform: custom
+    lambda: |-
+      auto my_ac = new IRAC();
+      //my_ac->set_sensor(id(temp));
+      my_ac->set_pins(12);
+      my_ac->set_protocol(&id(ac_model_2));
+      App.register_component(my_ac);
+      return {my_ac};
+    climates:
+      - name: "Canal 2"
+  - platform: custom
+    lambda: |-
+      auto my_ac = new IRAC();
+      //my_ac->set_sensor(id(temp));
+      my_ac->set_pins(13);
+      my_ac->set_protocol(&id(ac_model_3));
+      App.register_component(my_ac);
+      return {my_ac};
+    climates:
+      - name: "Canal 3"
+  - platform: custom
+    lambda: |-
+      auto my_ac = new IRAC();
+      //my_ac->set_sensor(id(temp));
+      my_ac->set_pins(15);
+      my_ac->set_protocol(&id(ac_model_4));
+      App.register_component(my_ac);
+      return {my_ac};
+    climates:
+      - name: "Canal 4"
+status_led:
+  pin:
+    number: 2
+    inverted: false
